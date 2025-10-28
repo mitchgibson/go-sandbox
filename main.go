@@ -4,6 +4,7 @@ import (
 	"context"
 	"factory/worker"
 	"fmt"
+	"math/rand"
 	"time"
 )
 
@@ -16,13 +17,14 @@ func main() {
 
 	ctx, _ := context.WithCancel(context.Background())
 
-	fmt.Println("?? Creating widget worker!!!")
+	fmt.Println("Main:Creating widget worker")
 	workerOpts := worker.WorkerOptions[Widget]{
 		Interval:   100 * time.Millisecond,
-		BufferSize: 10,
+		BufferSize: 1,
 		Action: func() Widget {
-			fmt.Println("?? Producing widget!!!")
-			return Widget{qty: 1}
+			qty := rand.Int31n(10)
+			fmt.Printf("Main:Creating %d widget(s)\n", qty)
+			return Widget{qty}
 		},
 	}
 
@@ -31,7 +33,7 @@ func main() {
 	go func() {
 		for w := range widgetCh {
 			time.Sleep(1 * time.Second)
-			fmt.Println("?? Consuming widget!!!", w.qty)
+			fmt.Println("Main:Goroutine:Widget created", w.qty)
 		}
 	}()
 

@@ -19,13 +19,13 @@ func Worker[T any](ctx context.Context, opts WorkerOptions[T]) <-chan T {
 		for {
 			select {
 			case <-ctx.Done():
-				fmt.Println("?? Closing channel!!!")
+				fmt.Println("Worker:Closing channel")
 				close(ch)
 				return
 			default:
-				fmt.Println("?? Producing!!!")
+				fmt.Println("Worker:Running action")
 				ch <- opts.Action()
-				fmt.Println("Buffer size:", len(ch))
+				fmt.Println("Worker:Buffer size:", len(ch))
 				time.Sleep(opts.Interval)
 			}
 		}
